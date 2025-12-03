@@ -1,4 +1,0 @@
-spring.application.name=demo
-
-jwt.secret=tj38fjskd8sd9sdf8sd9fsd8f9sdf8sdf8sdf8sd988d7f89sdf8
-jwt.expirationMs=3600000
