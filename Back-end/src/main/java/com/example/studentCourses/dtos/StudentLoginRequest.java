@@ -1,0 +1,24 @@
+package com.example.studentCourses.dtos;
+
+public class StudentLoginRequest {
+
+    private String sEmail;
+    private String sPassword;
+
+    public String getSEmail() {
+        return sEmail;
+    }
+
+    public void setSEmail(String sEmail) {
+        this.sEmail = sEmail;
+    }
+
+    public String getSPassword() {
+        return sPassword;
+    }
+
+    public void setSPassword(String sPassword) {
+        this.sPassword = sPassword;
+    }
+}
+

@@ -1,0 +1,43 @@
+package com.example.studentCourses.serviceLayer;
+
+import java.time.LocalDateTime;
+import com.example.studentCourses.repository.RegisteredStudentsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.example.studentCourses.Entity.RegisteredInstructorsEntity;
+import com.example.studentCourses.repository.RegisteredInstructorsRespository;
+
+@Service
+public class RegisteredInstructorsService {
+
+    private final RegisteredStudentsRepository registeredStudentsRepository;
+
+	@Autowired
+	private RegisteredInstructorsRespository registeredInstructorsRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+    RegisteredInstructorsService(RegisteredStudentsRepository registeredStudentsRepository) {
+        this.registeredStudentsRepository = registeredStudentsRepository;
+    }
+	
+	public RegisteredInstructorsEntity registerInstructor(RegisteredInstructorsEntity instructor) {
+		String password = instructor.getiPassword();
+		String hashedPassword = passwordEncoder.encode(password);
+		instructor.setiPassword(hashedPassword);
+		instructor.setiCreatedAt(LocalDateTime.now());
+		instructor.setiUpdatedAt(LocalDateTime.now());
+		return registeredInstructorsRepository.save(instructor);
+	}
+	
+	public boolean loginInstructor(RegisteredInstructorsEntity instructor) {
+		String email = instructor.getiEmail();
+		RegisteredInstructorsEntity ins = registeredInstructorsRepository.findByIEmail(email);
+		if(ins == null) return false;
+		return true;
+	}
+	
+}

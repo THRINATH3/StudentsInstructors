@@ -1,0 +1,4 @@
+spring.application.name=demo
+
+jwt.secret=change_this_to_a_random_long_secure_secret_key_at_least_32_bytes_base64_or_random
+jwt.expirationMs=3600000

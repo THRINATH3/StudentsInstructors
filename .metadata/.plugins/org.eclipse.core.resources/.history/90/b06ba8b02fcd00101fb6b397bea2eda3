@@ -1,0 +1,42 @@
+package com.example.studentCourses.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.studentCourses.Entity.RegisteredInstructorsEntity;
+import com.example.studentCourses.repository.RegisteredInstructorsRespository;
+import com.example.studentCourses.serviceLayer.RegisteredInstructorsService;
+
+@RestController
+@RequestMapping("/instructors")
+public class RegisteredInstructorController {
+
+    private final RegisteredInstructorsRespository registeredInstructorsRespository;
+
+	@Autowired
+	private RegisteredInstructorsService registerInstructorsService;
+
+    RegisteredInstructorController(RegisteredInstructorsRespository registeredInstructorsRespository) {
+        this.registeredInstructorsRespository = registeredInstructorsRespository;
+    }
+	
+	@PostMapping("/registerInstructor")
+	public ResponseEntity<?> registerInstructor(@RequestBody RegisteredInstructorsEntity instructor){
+		RegisteredInstructorsEntity inst = registerInstructorsService.registerInstructor(instructor);
+		return ResponseEntity.ok(inst);
+	}
+	
+	@PostMapping("/loginInstructor")
+	public ResponseEntity<?> loginInstructor(@RequestBody RegisteredInstructorsEntity instructor){
+		boolean checkInstructor = registerInstructorsService.loginInstructor(instructor);
+		if (checkInstructor == true) {
+            return ResponseEntity.ok("Login Successful");
+        } else {
+            return ResponseEntity.status(401).body("Invalid Credentials");
+        }
+	}
+}

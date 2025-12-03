@@ -1,0 +1,93 @@
+package com.example.studentCourses.serviceLayer;
+
+import java.time.LocalDateTime;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.example.studentCourses.Entity.RegisteredStudentsEntity;
+import com.example.studentCourses.dtos.LoginResponse;
+import com.example.studentCourses.dtos.StudentLoginRequest;
+import com.example.studentCourses.dtos.StudentResponse;
+import com.example.studentCourses.exceptions.AuthenticationFailedException;
+import com.example.studentCourses.exceptions.ResourceNotFoundException;
+import com.example.studentCourses.repository.RegisteredStudentsRepository;
+import com.example.studentCourses.security.JwtUtil;
+
+@Service
+public class RegisteredStudentsService {
+
+    @Autowired
+    private RegisteredStudentsRepository registeredStudentsRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    // REGISTER STUDENT 
+    public StudentResponse registerStudent(RegisteredStudentsEntity student) {
+
+        // Hash password
+        String hashedPassword = passwordEncoder.encode(student.getsPassword());
+        student.setsPassword(hashedPassword);
+        student.setCreatedAt(LocalDateTime.now());
+        student.setUpdatedAt(LocalDateTime.now());
+
+        // Save to DB
+        RegisteredStudentsEntity saved = registeredStudentsRepository.save(student);
+
+        // Convert Entity -> DTO
+        return convertToResponse(saved);
+    }
+
+    // LOGIN STUDENT 
+    public LoginResponse loginStudent(StudentLoginRequest studentRequest) {
+
+        // Find by email
+        RegisteredStudentsEntity storedStudent =
+                registeredStudentsRepository.findBySEmail(studentRequest.getEmail());
+
+        if (storedStudent == null) {
+            throw new ResourceNotFoundException("No student found with email: " + studentRequest.getEmail());
+        }
+
+        // Check password
+        boolean passwordMatch = passwordEncoder.matches(
+                studentRequest.getPassword(),
+                storedStudent.getsPassword()
+        );
+
+        if (!passwordMatch) {
+            throw new AuthenticationFailedException("Incorrect password");
+        }
+
+        // Convert Entity -> DTO
+        String token = jwtUtil.generateToken(
+                storedStudent.getsId(),
+                storedStudent.getsFirstName(),
+                storedStudent.getsLastName(),
+                storedStudent.getsEmail(),
+                storedStudent.getCreatedAt(),
+                storedStudent.getUpdatedAt(),
+                null,                   
+                "STUDENT"
+        );
+        
+        return new LoginResponse(token);
+    }
+
+    // ENTITY -> DTO CONVERTER 
+    private StudentResponse convertToResponse(RegisteredStudentsEntity student) {
+        StudentResponse response = new StudentResponse();
+        response.setId(student.getsId());
+        response.setFirstName(student.getsFirstName());
+        response.setLastName(student.getsLastName());
+        response.setEmail(student.getsEmail());
+        response.setCreatedAt(student.getCreatedAt());
+        response.setUpdatedAt(student.getUpdatedAt());
+        return response;
+    }
+}

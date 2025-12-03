@@ -1,0 +1,46 @@
+package com.example.studentCourses.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.studentCourses.Entity.RegisteredStudentsEntity;
+import com.example.studentCourses.dtos.LoginResponse;
+import com.example.studentCourses.dtos.StudentLoginRequest;
+import com.example.studentCourses.dtos.StudentResponse;
+import com.example.studentCourses.serviceLayer.RegisteredStudentsService;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/students")
+public class RegisteredStudentsController {
+
+    @Autowired
+    private RegisteredStudentsService studentService;
+    
+    @GetMapping("/hello")
+    public String hello() {
+    	return "HELLO WORLD";
+    }
+
+    // REGISTER
+    @PostMapping("/registerStudent")
+    public ResponseEntity<?> registerStudent(@Valid @RequestBody RegisteredStudentsEntity student) {
+    	StudentResponse savedStudent = studentService.registerStudent(student);
+        return ResponseEntity.ok(savedStudent);
+    }
+
+    // LOGIN
+    @PostMapping("/loginStudent")
+    public ResponseEntity<?> loginStudent(@RequestBody StudentLoginRequest student) {
+
+        LoginResponse response = studentService.loginStudent(student);
+
+        if (response != null) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(401).body("Invalid Credentials");
+        }
+    }
+}
