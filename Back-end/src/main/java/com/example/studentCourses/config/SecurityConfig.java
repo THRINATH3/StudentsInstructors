@@ -1,12 +1,12 @@
 package com.example.studentCourses.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import com.example.studentCourses.security.JwtFilter;
 
@@ -23,20 +23,20 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // PUBLIC ENDPOINTS (NO JWT REQUIRED)
-                .requestMatchers(
-                    "/students/loginStudent",
-                    "/students/registerStudent",
-                    "/instructors/loginInstructor",
-                    "/instructors/registerInstructor",
-                    "/courses/public/**"
-                ).permitAll()
+                // public auth endpoints
+                .requestMatchers("/students/loginStudent", "/students/registerStudent").permitAll()
+                .requestMatchers("/instructors/loginInstructor", "/instructors/registerInstructor").permitAll()
 
-                // PROTECTED ENDPOINTS (JWT REQUIRED)
-                .requestMatchers("/students/**").authenticated()
-                .requestMatchers("/instructors/**").authenticated()
-                .requestMatchers("/courses/**").authenticated()
+                // public courses reads
+                .requestMatchers("/courses/getAllCourses", "/courses/getCourse/**").permitAll()
 
+                // instructor-only
+                .requestMatchers("/courses/postCourse").hasRole("INSTRUCTOR")
+
+                // student-only
+                .requestMatchers("/courses/enroll/**").hasRole("STUDENT")
+
+                // everything else authenticated
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -44,3 +44,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+   
