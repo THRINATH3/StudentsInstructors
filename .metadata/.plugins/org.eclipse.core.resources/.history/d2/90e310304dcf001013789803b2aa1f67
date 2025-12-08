@@ -1,0 +1,89 @@
+package com.example.studentCourses.serviceLayer;
+
+import java.time.LocalDateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.example.studentCourses.Entity.RegisteredInstructorsEntity;
+import com.example.studentCourses.dtos.InstructorLoginRequest;
+import com.example.studentCourses.dtos.InstructorResponse;
+import com.example.studentCourses.dtos.LoginResponse;
+import com.example.studentCourses.exceptions.AuthenticationFailedException;
+import com.example.studentCourses.exceptions.ResourceNotFoundException;
+import com.example.studentCourses.repository.RegisteredInstructorsRespository;
+import com.example.studentCourses.security.JwtUtil;
+
+@Service
+public class RegisteredInstructorsService {
+
+    @Autowired
+    private RegisteredInstructorsRespository registeredInstructorsRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    // REGISTER INSTRUCTOR
+    public InstructorResponse registerInstructor(RegisteredInstructorsEntity instructor) {
+
+        instructor.setPassword(passwordEncoder.encode(instructor.getPassword()));
+
+        instructor.setCreatedAt(LocalDateTime.now());
+        instructor.setUpdatedAt(LocalDateTime.now());
+
+        RegisteredInstructorsEntity saved = registeredInstructorsRepository.save(instructor);
+
+        return convertToResponse(saved);
+    }
+
+    // LOGIN INSTRUCTOR
+    public LoginResponse loginInstructor(InstructorLoginRequest req) {
+
+        RegisteredInstructorsEntity storedInstructor =
+                registeredInstructorsRepository.findByEmail(req.getEmail());
+
+        if (storedInstructor == null) {
+            throw new ResourceNotFoundException("Instructor not found with email: " + req.getEmail());
+        }
+
+        boolean passwordMatch = passwordEncoder.matches(
+                req.getPassword(),
+                storedInstructor.getPassword()
+        );
+
+        if (!passwordMatch) {
+            throw new AuthenticationFailedException("Incorrect password");
+        }
+
+        String token = jwtUtil.generateToken(
+                storedInstructor.getId(),
+                storedInstructor.getFirstName(),
+                storedInstructor.getLastName(),
+                storedInstructor.getEmail(),
+                storedInstructor.getCreatedAt(),
+                storedInstructor.getUpdatedAt(),
+                storedInstructor.getBio(),
+                "INSTRUCTOR"
+        );
+
+        return new LoginResponse(token);
+    }
+
+    // ENTITY → DTO
+    private InstructorResponse convertToResponse(RegisteredInstructorsEntity instructor) {
+        InstructorResponse response = new InstructorResponse();
+
+        response.setId(instructor.getId());
+        response.setFirstName(instructor.getFirstName());
+        response.setLastName(instructor.getLastName());
+        response.setEmail(instructor.getEmail());
+        response.setBio(instructor.getBio());
+        response.setCreatedAt(instructor.getCreatedAt());
+        response.setUpdatedAt(instructor.getUpdatedAt());
+
+        return response;
+    }
+}

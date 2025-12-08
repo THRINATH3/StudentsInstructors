@@ -1,0 +1,79 @@
+package com.example.studentCourses.security;
+
+import java.security.Key;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
+@Component
+public class JwtUtil {
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.expirationMs}")
+    private long jwtExpirationMs;
+    
+    
+    // --------------------- GET SIGNING KEY ---------------------
+    private Key getSigningKey() {
+        byte[] keyBytes = jwtSecret.getBytes();
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    // --------------------- GENERATE TOKEN ----------------------
+    public String generateToken(String subject, String role) {
+
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + jwtExpirationMs);
+
+        return Jwts.builder()
+                .setSubject(subject)       // usually email or username
+                .claim("role", role)       // custom claim
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    // --------------------- VALIDATE TOKEN ----------------------
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token);   // if parsing fails → exception
+
+            return true; // token is valid
+        } catch (Exception e) {
+            return false; // invalid token
+        }
+    }
+
+    // --------------------- GET USERNAME FROM TOKEN ----------------------
+    public String getUsername(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.getSubject();
+    }
+
+    // --------------------- GET ROLE FROM TOKEN ----------------------
+    public String getRole(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("role", String.class);
+    }
+
+    // --------------------- INTERNAL : EXTRACT CLAIMS---------------------
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+}

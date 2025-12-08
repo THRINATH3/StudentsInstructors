@@ -3,6 +3,8 @@ package com.example.studentCourses.Entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example.studentCourses.dtos.InstructorResponse;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,8 +44,16 @@ public class CoursesEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "InstId")
-	private RegisteredInstructorsEntity instructor;
+	private InstructorResponse instructor;
 	
+	public InstructorResponse getInstructor() {
+		return instructor;
+	}
+
+	public void setInstructor(InstructorResponse instructor) {
+		this.instructor = instructor;
+	}
+
 	@OneToMany(mappedBy = "course")
 	private List<StudentRegisteredCoursesEntity> registeredStudents;
 	

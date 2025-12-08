@@ -1,6 +1,8 @@
 package com.example.studentCourses.serviceLayer;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,12 @@ public class RegisteredInstructorsService {
 
     @Autowired
     private JwtUtil jwtUtil;
+    
+    public InstructorResponse getInstructor(Long id) {
+    	RegisteredInstructorsEntity inst = registeredInstructorsRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Instructor not found with id: " + id));
+    	return convertToResponse(inst);
+    }
+    
 
     // REGISTER INSTRUCTOR
     public InstructorResponse registerInstructor(RegisteredInstructorsEntity instructor) {

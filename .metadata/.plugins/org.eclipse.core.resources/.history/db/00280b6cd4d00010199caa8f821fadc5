@@ -1,0 +1,31 @@
+package com.example.studentCourses.serviceLayer;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.studentCourses.Entity.CoursesEntity;
+import com.example.studentCourses.repository.CoursesRepository;
+
+@Service
+public class CoursesService {
+	
+	@Autowired
+	private CoursesRepository courseRepository;
+	
+	public List<CoursesEntity> getCoursesList(){
+		return courseRepository.findAll();
+	}
+	
+	public CoursesEntity registerCourse(CoursesEntity course) {
+		CoursesEntity c = courseRepository.save(course); 
+		return c;
+	}
+	
+	public CoursesEntity getCourse(Long id) {
+		CoursesEntity c = courseRepository.getById(id);
+		return c;
+	}
+	
+}

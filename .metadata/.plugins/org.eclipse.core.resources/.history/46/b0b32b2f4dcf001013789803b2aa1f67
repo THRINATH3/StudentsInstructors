@@ -1,0 +1,83 @@
+package com.example.studentCourses.Entity;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
+@Entity
+@Table(name = "RegisteredInstructors")
+public class RegisteredInstructorsEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "InstId")
+    private Long id;
+
+    @NotBlank(message = "Instructor first name cannot be empty")
+    @Size(min = 3, max = 50, message = "First name must be between 3-50 characters")
+    @Column(name = "FirstName")
+    private String firstName;
+
+    @NotBlank(message = "Instructor last name cannot be empty")
+    @Size(min = 3, max = 50, message = "Last name must be between 3-50 characters")
+    @Column(name = "LastName")
+    private String lastName;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    @Column(name = "Email", unique = true)
+    private String email;
+
+    @NotBlank(message = "Password is required")
+    @Pattern(
+        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*#?&]).{8,}$",
+        message = "Password must contain 8+ characters, 1 uppercase, 1 lowercase, 1 number, 1 special character"
+    )
+    @Column(name = "Password")
+    private String password;
+
+    @Column(name = "CreatedAt")
+    private LocalDateTime createdAt;
+
+    @Column(name = "UpdatedAt")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "Bio")
+    private String bio;
+
+    @OneToMany(mappedBy = "instructor")
+    private List<CoursesEntity> uploadedCourses;
+
+    // Getters & Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
+
+    public List<CoursesEntity> getUploadedCourses() { return uploadedCourses; }
+    public void setUploadedCourses(List<CoursesEntity> uploadedCourses) { this.uploadedCourses = uploadedCourses; }
+}

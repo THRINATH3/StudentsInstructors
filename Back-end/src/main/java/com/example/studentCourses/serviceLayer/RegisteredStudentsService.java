@@ -27,6 +27,12 @@ public class RegisteredStudentsService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    //GET STUDENT ON ID
+    public StudentResponse getStudent(Long id) {
+    	RegisteredStudentsEntity student = registeredStudentsRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+    	return convertToResponse(student);
+    }
+    
     // REGISTER STUDENT 
     public StudentResponse registerStudent(RegisteredStudentsEntity student) {
 

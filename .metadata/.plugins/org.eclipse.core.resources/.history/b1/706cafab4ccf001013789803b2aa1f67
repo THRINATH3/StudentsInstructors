@@ -1,0 +1,21 @@
+package com.example.studentCourses.dtos;
+
+public class InstructorLoginRequest {
+
+    private String iEmail;
+    private String iPassword;
+
+    public String getIEmail() {
+        return iEmail;
+    }
+    public void setIEmail(String email) {
+        this.iEmail = email;
+    }
+
+    public String getIPassword() {
+        return iPassword;
+    }
+    public void setIPassword(String password) {
+        this.iPassword= password;
+    }
+}

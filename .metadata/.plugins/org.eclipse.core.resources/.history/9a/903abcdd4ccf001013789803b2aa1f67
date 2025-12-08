@@ -1,0 +1,31 @@
+package com.example.studentCourses.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.studentCourses.Entity.RegisteredInstructorsEntity;
+import com.example.studentCourses.dtos.InstructorLoginRequest;
+import com.example.studentCourses.dtos.InstructorResponse;
+import com.example.studentCourses.dtos.LoginResponse;
+import com.example.studentCourses.serviceLayer.RegisteredInstructorsService;
+
+@RestController
+@RequestMapping("/instructors")
+public class RegisteredInstructorController {
+
+    @Autowired
+    private RegisteredInstructorsService registerInstructorsService;
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerInstructor(@RequestBody RegisteredInstructorsEntity instructor) {
+        InstructorResponse response = registerInstructorsService.registerInstructor(instructor);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginInstructor(@RequestBody InstructorLoginRequest loginRequest) {
+        LoginResponse response = registerInstructorsService.loginInstructor(loginRequest);
+        return ResponseEntity.ok(response);
+    }
+}
