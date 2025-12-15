@@ -1,0 +1,23 @@
+package com.example.studentCourses.dtos;
+
+public class CourseResponseDTO {
+
+    private Long id;
+    private String title;
+    private String description;
+    private String category;
+    private String duration;
+    private String instructorName;
+
+    public CourseResponseDTO(Long id, String title, String description, String category, String duration, String instructorName) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.duration = duration;
+        this.instructorName = instructorName;
+    }
+
+    // Getters & Setters
+}
+

@@ -1,0 +1,5 @@
+package com.example.studentCourses.dtos;
+
+public class CourseDTO {
+
+}

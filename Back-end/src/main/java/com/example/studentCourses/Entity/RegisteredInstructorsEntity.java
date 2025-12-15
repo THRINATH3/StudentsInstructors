@@ -3,6 +3,8 @@ package com.example.studentCourses.Entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -48,6 +50,7 @@ public class RegisteredInstructorsEntity {
     private String bio;
 
     @OneToMany(mappedBy = "instructor")
+    @JsonManagedReference
     private List<CoursesEntity> uploadedCourses;
 
     // Getters and Setters

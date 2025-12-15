@@ -1,6 +1,7 @@
 package com.example.studentCourses.serviceLayer;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.studentCourses.Entity.CoursesEntity;
 import com.example.studentCourses.Entity.RegisteredStudentsEntity;
 import com.example.studentCourses.Entity.StudentRegisteredCoursesEntity;
+import com.example.studentCourses.dtos.StudentCourseDTO;
 import com.example.studentCourses.exceptions.ResourceNotFoundException;
 import com.example.studentCourses.repository.CoursesRepository;
 import com.example.studentCourses.repository.RegisteredStudentsRepository;
@@ -34,4 +36,19 @@ public class StudentRegisteredService {
 		enroll.setEnrolledAt(LocalDateTime.now());
 		return studentRegisteredRepository.save(enroll);
 	}
+	
+	public List<StudentCourseDTO> getStudentsByCourse(Long courseId) {
+
+        return studentRegisteredRepository.findByCourse_cId(courseId)
+                .stream()
+                .map(r -> new StudentCourseDTO(
+                        r.getStudent().getSId(),
+                        r.getStudent().getSFirstName(),
+                        r.getStudent().getSLastName(),
+                        r.getStudent().getSEmail(),
+                        r.getEnrolledAt()
+                ))
+                .toList();
+    }
+	
 }

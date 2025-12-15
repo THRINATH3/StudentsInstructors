@@ -3,7 +3,9 @@ package com.example.studentCourses.Entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -56,11 +58,12 @@ public class RegisteredStudentsEntity {
     private LocalDateTime updatedAt;
     
     @OneToMany(mappedBy = "student")
-    @JsonIgnore
+    @JsonManagedReference(value = "student-registered")
     private List<StudentRegisteredCoursesEntity> registeredCourses;
+
     
     @OneToMany(mappedBy = "student")
-    @JsonIgnore
+    @JsonManagedReference(value = "student-completed")
     private List<StudentCompletedCoursesEntity> completedCourses;
 
     

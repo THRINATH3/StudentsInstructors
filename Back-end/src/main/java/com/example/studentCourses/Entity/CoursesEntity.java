@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.studentCourses.dtos.InstructorResponse;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,16 +28,21 @@ public class CoursesEntity {
 	private Long cId;
 	
 	@Column(name = "Title")
+	@JsonProperty("title")
 	private String cTitle;
-	
+
 	@Column(name = "Description")
+	@JsonProperty("description")
 	private String cDescription;
-	
+
 	@Column(name = "Category")
+	@JsonProperty("category")
 	private String cCategory;
-	
+
 	@Column(name = "Duration")
+	@JsonProperty("duration")
 	private String cDuration;
+
 	
 	@Column(name = "CreatedAt")
 	private LocalDateTime cCreatedAt;
@@ -44,21 +52,25 @@ public class CoursesEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "InstId")
-	private InstructorResponse instructor;
-	
-	public InstructorResponse getInstructor() {
+	@JsonBackReference
+	private RegisteredInstructorsEntity instructor;
+
+	public RegisteredInstructorsEntity getInstructor() {
 		return instructor;
 	}
 
-	public void setInstructor(InstructorResponse instructor) {
+	public void setInstructor(RegisteredInstructorsEntity instructor) {
 		this.instructor = instructor;
 	}
 
 	@OneToMany(mappedBy = "course")
-	private List<StudentRegisteredCoursesEntity> registeredStudents;
-	
-	@OneToMany(mappedBy = "course")
-	private List<StudentCompletedCoursesEntity> completedStudents;
+    @JsonManagedReference(value = "course-registered")
+    private List<StudentRegisteredCoursesEntity> registeredStudents;
+
+    @OneToMany(mappedBy = "course")
+    @JsonManagedReference(value = "course-completed")
+    private List<StudentCompletedCoursesEntity> completedStudents;
+
  
 	public List<StudentRegisteredCoursesEntity> getRegisteredStudents() {
 		return registeredStudents;

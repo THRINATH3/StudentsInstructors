@@ -2,6 +2,9 @@ package com.example.studentCourses.Entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,12 +24,14 @@ public class StudentRegisteredCoursesEntity {
 	private Long sCId;
 	
 	@ManyToOne
-	@JoinColumn(name = "StuId",nullable = false)
+	@JoinColumn(name = "StuId", nullable = false)
+	@JsonBackReference(value = "student-registered")
 	private RegisteredStudentsEntity student;
-	
-	@ManyToOne
-	@JoinColumn(name = "CouId",nullable = false)
-	private CoursesEntity course;
+
+	 @ManyToOne
+	 @JoinColumn(name = "CouId", nullable = false)
+	 @JsonBackReference(value = "course-registered")
+	 private CoursesEntity course;
 	
 	@Column(name = "EnrolledAt")
 	private LocalDateTime enrolledAt;

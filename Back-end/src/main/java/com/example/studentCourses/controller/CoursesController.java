@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.studentCourses.Entity.CoursesEntity;
 import com.example.studentCourses.Entity.RegisteredInstructorsEntity;
 import com.example.studentCourses.Entity.StudentRegisteredCoursesEntity;
+import com.example.studentCourses.dtos.CourseResponseDTO;
 import com.example.studentCourses.dtos.InstructorResponse;
 import com.example.studentCourses.security.JwtUtil;
 import com.example.studentCourses.serviceLayer.CoursesService;
@@ -35,13 +36,15 @@ public class CoursesController {
 	@Autowired
 	private RegisteredInstructorsService registeredInstructorsService;
 	
+	@Autowired
 	private StudentRegisteredService enrollService;
 	
 	@GetMapping("/getAllCourses")
-	public ResponseEntity<Object> getAllCourses(){
-		List<CoursesEntity> list = coursesService.getCoursesList();
-		return ResponseEntity.ok(list);
+	public ResponseEntity<Object> getAllCourses() {
+	    List<CourseResponseDTO> list = coursesService.getCoursesList();
+	    return ResponseEntity.ok(list);
 	}
+
 	
 	@PostMapping("/postCourse")
 	public ResponseEntity<Object> postCourse(@RequestBody CoursesEntity course,@RequestHeader("Authorization") String authHeader){
@@ -54,17 +57,18 @@ public class CoursesController {
 		}
 		
 		Long Id = jwtUtil.getId(token);
-		InstructorResponse inst = registeredInstructorsService.getInstructor(Id);
+		RegisteredInstructorsEntity inst = registeredInstructorsService.getInstructor(Id);
 		
 		course.setInstructor(inst);
 		
 		
 		CoursesEntity post = coursesService.registerCourse(course);
+		
 		return ResponseEntity.ok(post);
 		
 	}
 	
-	@PostMapping("/enroll/{courseId}")
+	@PostMapping("/enroll/{CourseID}")
 	public ResponseEntity<Object> enrollStudent(@PathVariable Long CourseID,@RequestHeader("Authorization") String authHeader){
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(401).body("Missing Authorization header");
@@ -91,4 +95,30 @@ public class CoursesController {
 
         return ResponseEntity.ok(course);
 	}
+	
+	@GetMapping("/{courseId}/students")
+	public ResponseEntity<Object> getRegisteredStudents(
+	        @PathVariable Long courseId,
+	        @RequestHeader("Authorization") String authHeader) {
+
+	    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+	        return ResponseEntity.status(401).body("Missing Authorization Header");
+	    }
+
+	    String token = authHeader.substring(7);
+	    if (!jwtUtil.validateToken(token)) {
+	        return ResponseEntity.status(401).body("Invalid Token");
+	    }
+
+	    // OPTIONAL: role check (Instructor/Admin)
+	    String role = jwtUtil.getRole(token);
+	    if (!role.equals("INSTRUCTOR")) {
+	        return ResponseEntity.status(403).body("Access Denied");
+	    }
+
+	    return ResponseEntity.ok(
+	            enrollService.getStudentsByCourse(courseId)
+	    );
+	}
+
 }

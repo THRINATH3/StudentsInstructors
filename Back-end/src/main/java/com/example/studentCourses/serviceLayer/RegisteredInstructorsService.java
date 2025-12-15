@@ -27,9 +27,9 @@ public class RegisteredInstructorsService {
     @Autowired
     private JwtUtil jwtUtil;
     
-    public InstructorResponse getInstructor(Long id) {
+    public RegisteredInstructorsEntity getInstructor(Long id) {
     	RegisteredInstructorsEntity inst = registeredInstructorsRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Instructor not found with id: " + id));
-    	return convertToResponse(inst);
+    	return inst;
     }
     
 

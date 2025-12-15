@@ -1,5 +1,0 @@
-@Repository
-public interface RegisteredInstructorsRespository extends JpaRepository<RegisteredInstructorsEntity, Long> {
-
-    RegisteredInstructorsEntity findByEmail(String email);
-}
