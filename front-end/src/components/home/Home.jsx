@@ -1,12 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Home1 from '../../assets/Home1.png'
 import Home2 from '../../assets/Home2.png'
 import Home3 from '../../assets/Home3.png'
 import Home4 from '../../assets/Home4.png'
 import Home5 from '../../assets/Home5.png'
-
+import coursesData from '../../assets/Courses'
+import './Home.css';
 function Home() {
   const photos = [Home1, Home2, Home3,Home4,Home5];
+  console.log(coursesData);
+  let [idx,setIdx] = useState(0);
+  let underline = 4;
+
+  function changeIndex(x){
+    setIdx(x);
+  }
 
   return (
     <div className="container" style={{paddingTop:'100px'}}>
@@ -21,7 +29,6 @@ function Home() {
             >
               <img
                 src={img}
-                className="d-block"
                 alt={`slide-${index}`}
                 style={{width:'100%',height:'500px',borderRadius:'50px'}}
               />
@@ -41,6 +48,36 @@ function Home() {
 
       </div>
 
+      {/* Contents in site :  */}
+      <div className="container text-white mt-5">
+        <h1 style={{fontWeight:'bold'}}>Skills to transform your career</h1>
+        <div style={{display:'flex',alignItems:'center',columnGap:'80px'}}>
+          <h5 style={{cursor:'pointer',borderBottom:idx == 0 ? 'solid white 1px' : '',marginBottom:'-4px'}} onClick={()=>(changeIndex(0))} >Artifical Intelligence</h5>
+          <h5 style={{cursor:'pointer',borderBottom:idx == 1 ? 'solid white 1px' : '',marginBottom:'-4px'}} onClick={()=>(changeIndex(1))} >Full Stack</h5>
+          <h5 style={{cursor:'pointer',borderBottom:idx == 2 ? 'solid white 1px' : '',marginBottom:'-4px'}} onClick={()=>(changeIndex(2))} >Java</h5>
+          <h5 style={{cursor:'pointer',borderBottom:idx == 3 ? 'solid white 1px' : '',marginBottom:'-4px'}} onClick={()=>(changeIndex(3))} >Microsoft-Excel</h5>
+          <h5 style={{cursor:'pointer',borderBottom:idx == 4 ? 'solid white 1px' : '',marginBottom:'-4px'}} onClick={()=>(changeIndex(4))} >Python</h5>
+          <h5 style={{cursor:'pointer',borderBottom:idx == 5 ? 'solid white 1px' : '',marginBottom:'-4px'}} onClick={()=>(changeIndex(5))} >C/CPP</h5>
+        </div>
+        <br />
+        <div className='no-scrollbar' style={{display:'flex',columnGap:'30px',overflowX:'auto'}}>
+          {coursesData[idx].map((data)=>(
+          <div className='container p-3' style={{border:'solid white 1px',borderRadius:'20px'}}>
+            <div className="text-center">
+              <img  src={data.image} alt="" style={{width:'300px',height:'150px',marginBottom:'10px',borderRadius:'20px'}} />
+            </div>
+            <h5>{data.title}</h5>
+            <p>{data.author}</p>
+            <div style={{display:'flex',columnGap:'20px'}}>
+              <button style={{width:'100px',height:'30px',fontSize:'13px',cursor:'none'}} className="btn btn-outline-secondary">Best Seller</button>
+              <button style={{width:'100px',height:'30px',fontSize:'13px',cursor:'none'}} className="btn btn-outline-info">{data.price}</button>
+              <button style={{width:'100px',height:'30px',fontSize:'13px',cursor:'none'}} className="btn btn-outline-warning">{data.rating}</button>
+            </div>
+          </div>
+        ))}
+        </div>
+      </div>
+      
     </div>
   )
 }

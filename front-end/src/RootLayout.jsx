@@ -4,7 +4,7 @@ import Footer from './components/footer/Footer'
 import { Outlet } from 'react-router-dom'
 function RootLayout() {
   return (
-    <div className='bg-black'>
+    <div className='bg-black siteFont'>
         <Header  />
         <div style={{minHeight:'100vh',minWidth:'100%'}}>
             <Outlet />
