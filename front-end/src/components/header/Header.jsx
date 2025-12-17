@@ -15,7 +15,7 @@ function Header() {
        </div>
        <div  style={{display:'flex',columnGap:'50px'}}>
           <Link to='' className="text-decoration-none link" >About</Link>
-          <Link to='' className="text-decoration-none link" >Login/Signup</Link>
+          <Link to='register' className="text-decoration-none link" >Login/Signup</Link>
           <Link to='' className="text-decoration-none link" >Explore</Link>
        </div>
     </div>

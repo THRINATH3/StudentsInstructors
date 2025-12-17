@@ -5,6 +5,7 @@ import Home3 from '../../assets/Home3.png'
 import Home4 from '../../assets/Home4.png'
 import Home5 from '../../assets/Home5.png'
 import coursesData from '../../assets/Courses'
+import { GiTeacher } from "react-icons/gi";
 import './Home.css';
 function Home() {
   const photos = [Home1, Home2, Home3,Home4,Home5];
@@ -50,8 +51,8 @@ function Home() {
 
       {/* Contents in site :  */}
       <div className="container text-white mt-5">
-        <h1 style={{fontWeight:'bold'}}>Skills to transform your career</h1>
-        <div style={{display:'flex',alignItems:'center',columnGap:'80px'}}>
+        <h1 style={{fontWeight:'bold'}} className='mb-3'>Skills to transform your career</h1>
+        <div className='mb-3' style={{display:'flex',alignItems:'center',columnGap:'80px'}}>
           <h5 style={{cursor:'pointer',borderBottom:idx == 0 ? 'solid white 1px' : '',marginBottom:'-4px'}} onClick={()=>(changeIndex(0))} >Artifical Intelligence</h5>
           <h5 style={{cursor:'pointer',borderBottom:idx == 1 ? 'solid white 1px' : '',marginBottom:'-4px'}} onClick={()=>(changeIndex(1))} >Full Stack</h5>
           <h5 style={{cursor:'pointer',borderBottom:idx == 2 ? 'solid white 1px' : '',marginBottom:'-4px'}} onClick={()=>(changeIndex(2))} >Java</h5>
@@ -67,11 +68,11 @@ function Home() {
               <img  src={data.image} alt="" style={{width:'300px',height:'150px',marginBottom:'10px',borderRadius:'20px'}} />
             </div>
             <h5>{data.title}</h5>
-            <p>{data.author}</p>
+            <p><GiTeacher className='fs-2 mb-1' /> {data.author}</p>
             <div style={{display:'flex',columnGap:'20px'}}>
-              <button style={{width:'100px',height:'30px',fontSize:'13px',cursor:'none'}} className="btn btn-outline-secondary">Best Seller</button>
-              <button style={{width:'100px',height:'30px',fontSize:'13px',cursor:'none'}} className="btn btn-outline-info">{data.price}</button>
-              <button style={{width:'100px',height:'30px',fontSize:'13px',cursor:'none'}} className="btn btn-outline-warning">{data.rating}</button>
+              <span className="badge bg-secondary fs-6">Bestseller</span>
+              <span className="badge bg-info fs-6">{data.price}</span>
+              <span className="badge bg-light text-dark fs-6">⭐ {data.rating}</span>
             </div>
           </div>
         ))}
